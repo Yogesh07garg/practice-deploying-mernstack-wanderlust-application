@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      mongo:
+        condition: "service_healthy"
+    restart: always
+    env_file:
+      - ./backend/.env.sample
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: always
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./backend/data:/data/db
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./frontend/.env.sample
+    restart: always
+    depends_on:
+      - mongo
+      - backend
+
+volumes:
+  data:

@@ -5,3 +5,6 @@ backend/node_modules
 /node_modules
 coverage/
 .idea/
+# Ignore MongoDB data volume
+backend/data/
+
