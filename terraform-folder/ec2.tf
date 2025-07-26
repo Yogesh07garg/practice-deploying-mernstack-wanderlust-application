@@ -73,9 +73,10 @@ resource "aws_instance" "my_instance" {
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   ami = "ami-0f918f7e67a3323f0"
   instance_type = var.ec2_instance_type
+  user_data = file("install_docker.sh")
 
   root_block_device {
-    volume_size = var.ec2__volume_size
+    volume_size = var.ec2_volume_size
     volume_type = "gp3"
   }
 
